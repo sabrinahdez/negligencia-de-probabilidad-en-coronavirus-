@@ -1,0 +1,54 @@
+install.packages("readxl")
+library(readxl) 
+
+#extraemos base de datos
+
+encuestas <- read_excel("examen_principiosdatos.xlsx")
+vacuna <- read_excel("examen_principiosdatos.xlsx", range = "B1:B101")
+voluntarios <- read_excel("examen_principiosdatos.xlsx", range = "C1:C101")
+
+
+#calculamos el promedio de vacuna y voluntarios
+
+nrow(vacuna)
+vacuna$promedio <- apply(vacuna[,1:1], 2, mean )
+voluntarios$promedio <- apply(voluntarios[,1:1], 2, mean)
+
+#sacamos la tabla 
+
+tabla <- c(vacuna$promedio[1], voluntarios$promedio[1])
+tabla <- matrix(tabla, nrow = 1, byrow = TRUE)
+
+#sacamos grafico
+
+barplot(tabla, main = "Promedios: Vacunas y Voluntarios",
+        ylab = "Promedios", beside = TRUE, col = c("purple", "pink"), 
+        names.arg = c("Pago para vacuna", "Pago para voluntario"))
+
+#desviacion estandar 
+
+vacuna$sdVa <-apply(vacuna[,1:1], 2, sd)
+voluntarios$sdVo <- apply (voluntarios [,1:1], 2, sd)
+
+#pruebas de hipotesis; valor p
+
+p1_Va <- vacuna[,1:1]
+p2_Vo <- voluntarios [,1:1]
+
+p1_Va <- t(vacuna[,1:1])
+p2_Vo<-t(voluntarios[,1:1])
+
+#prueba t 
+t.test(x=p1_Va, y=p2_Vo)
+
+
+#gráfico de las acciones de mercado
+
+indice <- read.csv("examen.csv")
+install.packages("ggplot2")
+library(ggplot) 
+
+ggplot(indice, aes(x= as.Date(Date)))+
+         geom_line(aes (y= Close), color= "orange")+
+  geom_line(aes (y= High), color= "purple")+
+  geom_line(aes (y= Low), color= "red")
